@@ -1,10 +1,10 @@
 var express = require("express");
-var exphbs = require("express-handlebars");
 var mongoose = require("mongoose");
 var cheerio = require("cheerio");
 var axios = require("axios");
 var logger = require("morgan");
 var routes = require("./controllers/articlesController")
+var path = require("path");
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 // These are used for scraping
@@ -23,17 +23,16 @@ var app = express();
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
+
 // Parse request body as JSON
 app.use(express.urlencoded({
     extended: true
 }));
 app.use(express.json());
+
 // Make public a static folder
 app.use(express.static("public"));
 
-// Set up handlebars
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
 
 // connect to mongo database
 mongoose.connect(MONGODB_URI, {
@@ -78,7 +77,10 @@ app.get("/articles", function(req, res) {
 // Import routes and give the server access to them
 // app.use(routes);
 
+app.get("/comment", function(req, res) {
 
+    res.sendFile(path.join(__dirname, "public/comment.html"));
+  });
 
 // Start the server
 app.listen(PORT, function () {
