@@ -54,7 +54,7 @@ axios.get('https://www.npr.org').then(function (content) {
                     
                 })
                 .catch(function (err) {
-                    throw err;
+                    console.log (err);
                 })
         }
     });
