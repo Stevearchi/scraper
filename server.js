@@ -75,30 +75,32 @@ app.get("/articles", function (req, res) {
 
 app.get("/comments/:id", (req, res) => {
     //Using the id passed in the id paramater, prepare a query that finds the matching id in our db
-    db.comment.create({ comment: "" })
-        .then(newComment =>{
-            return db.article.findOneAndUpdate({},{ $push: {comments: dbComment._id}}, {new: true})
-        })
-        .then(newComment => {
-            // res.json(newComment);
-            db.comment.findOne({ _id: req.params.id })
-            // populate all of the comments associated with it
-            .populate("comment")
-            .then(dbComment => {
-                res.json(dbComment);
-            })
-            .catch(err => {
-                res.json(err);
-            });
-        })
+    // db.comment.create({ comment: "" })
+    //     .then(newComment =>{
+    //         return db.article.findOneAndUpdate({},{ $push: {comments: dbComment._id}}, {new: true})
+    //    })
+    db.article.findOne({ _id: req.params.id })
+        // populate all of the comments associated with it
+        .populate("comment")
+        .then (dbComment => res.json(dbComment))
         .catch(err => {
-            res.json(err)
+            res.json(err);
         });
 });
 
-app.get("/comment", function (req, res) {
-
-    res.sendFile(path.join(__dirname, "public/comment.html"));
+app.post("/addComment/:id", function (req, res) {
+    console.log('ID: ', req.params.id)
+    console.log(req.body)
+    db.comment.create(req.body)
+    .then(dbComment => {
+       
+        return db.article.findOneAndUpdate({_id: req.params.id},{ $push: {comments: dbComment._id}}, {new: true})  
+    })
+    .then(dbComment =>{
+        res.json(dbComment);
+    })
+    .catch(err => res.json(err));
+    
 });
 
 // Start the server
