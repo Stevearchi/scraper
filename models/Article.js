@@ -14,10 +14,10 @@ var articleSchema = new Schema({
         type: String
     },
     // This allows us to populate the Article with an associated Note
-    comments: {
+    comments: [{
         type: Schema.Types.ObjectId,
-        ref: "comments"
-    }
+        ref: "comment"
+    }]
 });
 
 var article = mongoose.model("article", articleSchema);

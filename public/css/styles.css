@@ -7,7 +7,11 @@ h2 {
     font-size: 1.3em;
 }
 
-/* #commentField {
-    width:200px; 
-    height:50px;
-} */
+#commentArea {
+    background-color: #eeeeee;
+    color: #3e658e !important;
+}
+
+#commentArea h1 {
+    color: #3e658e !important;
+}

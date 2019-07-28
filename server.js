@@ -64,7 +64,7 @@ app.get("/articles", function (req, res) {
     db.article.find({})
         .then(function (articles) {
             // If we were able to successfully find Articles, send them back to the client
-            console.log(articles)
+            
             res.json(articles);
         })
         .catch(function (err) {
@@ -75,22 +75,21 @@ app.get("/articles", function (req, res) {
 
 app.get("/comments/:id", (req, res) => {
     //Using the id passed in the id paramater, prepare a query that finds the matching id in our db
-    // db.comment.create({ comment: "" })
-    //     .then(newComment =>{
-    //         return db.article.findOneAndUpdate({},{ $push: {comments: dbComment._id}}, {new: true})
-    //    })
+
     db.article.findOne({ _id: req.params.id })
         // populate all of the comments associated with it
-        .populate("comment")
-        .then (dbComment => res.json(dbComment))
+        .populate("comments")
+        .then (dbComment => {
+            console.log('Inside Findone.then')
+            res.json(dbComment)
+        })
         .catch(err => {
             res.json(err);
         });
 });
 
 app.post("/addComment/:id", function (req, res) {
-    console.log('ID: ', req.params.id)
-    console.log(req.body)
+
     db.comment.create(req.body)
     .then(dbComment => {
        

@@ -1,10 +1,29 @@
-let articleId;
-
-$("#commentArea").hide();
 $(document).ready(function () {
 
-    $.getJSON("/articles", (data) => {
+    let articleId;
 
+    $("#commentArea").hide();
+
+    // function which displays comments for a given article
+    const displayComments = (article) => {
+        const comArea = $(comments);
+        comArea.empty();
+        $.get('/comments/' + article)
+        .then (articleWithComments => {
+
+            // console.log(articleWithComments)
+            articleWithComments.comments.forEach(comment => {
+                console.log('Comments: ' , comment.comment)
+                comArea.append("<p>", comment.comment, "</p>")
+            });
+        })
+       
+    }
+
+
+
+    $.getJSON("/articles", (data) => {
+        // display summary and headline for all articles in DB as links to the articles on NPR.org
         for (let i = 0; i < data.length; i++) {
             let artSection = '<div class="row"> <div class="col-md-9"> <h2><a href="';
             artSection += data[i].link + '">';
@@ -23,24 +42,20 @@ $(document).ready(function () {
         // event.preventDefault();
         articleId = $(this).data("id")
         $.get("/comments/" + articleId, data => {
-            
+
         })
 
         $("#commentArea").show();
-
+        displayComments(articleId);
     })
 
     $(document).on('click', '#submitCom', () => {
         event.preventDefault();
         //Save the id from the button tag
-        console.log(articleId)
-        $.post("/addComment/" + articleId, {comment: $('#commentField').val()}, (data, status) =>{
-           console.log(data);
-           console.log(status)
+        $.post("/addComment/" + articleId, { comment: $('#commentField').val().trim() }, (data, status) => {
+  
+            displayComments(articleId);
+            $('#commentField').val() = "";
         })
-
     })
-
-
-
-})
+});
